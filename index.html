@@ -364,6 +364,75 @@ input[type=range]::-webkit-slider-thumb{
   .hero{padding:32px 16px 28px;}
   .card{margin:0 12px 14px;padding:18px 16px;}
 }
+
+/* ── STEP 6: 연락처 입력 ── */
+.contact-card{
+  background:var(--navy-m);
+  border:1.5px solid rgba(0,214,143,.35);
+  border-radius:var(--radius);
+  padding:24px 20px;
+  margin:0 16px 16px;
+}
+.contact-header{text-align:center;margin-bottom:20px;}
+.contact-grade-badge{
+  display:inline-block;padding:5px 14px;border-radius:20px;
+  background:var(--green-lt);border:1px solid var(--green);
+  font-size:11px;font-weight:700;color:var(--green);letter-spacing:.3px;margin-bottom:12px;
+}
+.contact-title{font-size:19px;font-weight:900;line-height:1.45;margin-bottom:6px;}
+.contact-sub{font-size:12.5px;color:rgba(255,255,255,.6);line-height:1.7;}
+.inp-contact{
+  width:100%;padding:14px 15px;
+  background:rgba(255,255,255,.07);
+  border:1.5px solid rgba(255,255,255,.2);
+  border-radius:9px;
+  font-family:var(--body);font-size:16px;font-weight:700;color:var(--white);
+  outline:none;transition:border-color .2s;-webkit-appearance:none;
+}
+.inp-contact:focus{border-color:var(--green);}
+.inp-contact::placeholder{color:rgba(255,255,255,.25);font-weight:400;font-size:14px;}
+.inp-contact.error{border-color:var(--red);}
+.inp-error{font-size:11px;color:var(--red);margin-top:5px;display:none;}
+.inp-error.show{display:block;}
+.submit-btn{
+  display:block;width:100%;padding:16px 18px;
+  background:var(--green);color:var(--navy);
+  border:none;border-radius:10px;
+  font-family:var(--body);font-size:15px;font-weight:900;
+  text-align:center;cursor:pointer;letter-spacing:-.2px;
+  transition:transform .15s,opacity .15s;margin-top:6px;
+}
+.submit-btn:disabled{opacity:.35;cursor:not-allowed;}
+.submit-btn:not(:disabled):active{transform:scale(.985);}
+.submit-btn.sending{background:rgba(0,214,143,.5);position:relative;overflow:hidden;}
+.submit-btn.sending::after{
+  content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.25),transparent);
+  animation:shimmer 1.2s infinite;
+}
+.contact-privacy{margin-top:12px;text-align:center;font-size:10px;color:rgba(255,255,255,.35);line-height:1.6;}
+
+/* ── 제출 완료 ── */
+.success-wrap{display:none;padding:40px 20px 60px;text-align:center;animation:fadeUp .4s ease;}
+.success-wrap.show{display:block;}
+.success-icon{font-size:64px;margin-bottom:16px;display:block;}
+.success-title{font-size:22px;font-weight:900;margin-bottom:10px;line-height:1.4;}
+.success-sub{font-size:13.5px;color:rgba(255,255,255,.7);line-height:1.8;margin-bottom:28px;white-space:pre-line;}
+.success-info-box{
+  background:var(--green-lt);border:1.5px solid rgba(0,214,143,.35);
+  border-radius:var(--radius);padding:16px 18px;text-align:left;margin-bottom:20px;
+}
+.sib-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid rgba(0,214,143,.15);}
+.sib-row:last-child{border-bottom:none;}
+.sib-k{font-size:11px;color:rgba(255,255,255,.55);}
+.sib-v{font-size:13px;font-weight:700;color:var(--green);}
+.success-retry{
+  display:block;width:100%;padding:13px;border-radius:10px;
+  background:transparent;border:1.5px solid rgba(255,255,255,.2);
+  color:rgba(255,255,255,.55);
+  font-family:var(--body);font-size:13px;font-weight:700;
+  text-align:center;cursor:pointer;transition:all .2s;
+}
 </style>
 </head>
 <body>
@@ -615,7 +684,7 @@ input[type=range]::-webkit-slider-thumb{
   <div class="result-cta" id="resultCta">
     <div class="rc-title" id="ctaTitle"></div>
     <div class="rc-sub" id="ctaSub"></div>
-    <a class="rc-btn" href="https://talk.naver.com/profile/w9250ia/form/1" target="_blank" id="ctaBtn"></a>
+    <button class="rc-btn" onclick="scrollToContact()" id="ctaBtn" style="border:none;cursor:pointer;"></button>
     <div class="rc-micro">
       <span>🏢 건물명 공개</span><span class="rc-dot"></span>
       <span>💰 수수료 0원</span><span class="rc-dot"></span>
@@ -627,9 +696,50 @@ input[type=range]::-webkit-slider-thumb{
   <button class="retry-btn" onclick="resetDiagnosis()">↩ 처음부터 다시 진단하기</button>
 </div>
 
+<!-- ════ STEP 6: 연락처 입력 ════ -->
+<div id="contactStep" style="display:none;padding-top:8px;">
+  <div class="contact-card">
+    <div class="contact-header">
+      <div class="contact-grade-badge" id="contactGradeBadge">✅ 진단 완료</div>
+      <div class="contact-title">마지막 단계입니다.<br/>연락처를 남겨주시면<br/>상담 일정을 잡아드립니다.</div>
+      <div class="contact-sub">📞 상담은 전화 또는 카카오톡으로 진행되며<br/>수수료는 전혀 없습니다.</div>
+    </div>
+
+    <div class="inp-wrap">
+      <div class="inp-label">이름 <span style="color:var(--red);font-size:10px;">*필수</span></div>
+      <input class="inp-contact" type="text" id="inputName" placeholder="성함을 입력해 주세요" maxlength="20" autocomplete="name"/>
+      <div class="inp-error" id="nameError">이름을 입력해 주세요.</div>
+    </div>
+
+    <div class="inp-wrap">
+      <div class="inp-label">휴대폰 번호 <span style="color:var(--red);font-size:10px;">*필수</span></div>
+      <input class="inp-contact" type="tel" id="inputPhone" placeholder="010-0000-0000" maxlength="13" autocomplete="tel" oninput="formatPhone(this)"/>
+      <div class="inp-error" id="phoneError">올바른 휴대폰 번호를 입력해 주세요. (010으로 시작)</div>
+    </div>
+
+    <button class="submit-btn" id="submitBtn" onclick="submitContact()">
+      📋 상담 신청 완료하기 →
+    </button>
+
+    <div class="contact-privacy">
+      🔒 입력하신 정보는 상담 목적으로만 사용되며 외부에 제공되지 않습니다.<br/>
+      제출 시 개인정보 수집·이용에 동의하는 것으로 간주합니다.
+    </div>
+  </div>
+</div>
+
+<!-- ════ 제출 완료 ════ -->
+<div class="success-wrap" id="successWrap">
+  <span class="success-icon">🎉</span>
+  <div class="success-title">상담 신청이 완료되었습니다!</div>
+  <div class="success-sub" id="successSubText">빠른 시간 안에 연락드리겠습니다. 궁금한 점은 언제든지 편하게 문의주세요.</div>
+  <div class="success-info-box" id="successInfoBox"></div>
+  <button class="success-retry" onclick="resetDiagnosis()">↩ 처음부터 다시 진단하기</button>
+</div>
+
 <!-- Sticky -->
 <div class="sticky-cta" id="stickyCta">
-  <a href="https://talk.naver.com/profile/w9250ia/form/1" target="_blank">
+  <a href="tel:01083871793">
     📞 결과 바탕으로 실제 구조 상담받기 →
   </a>
 </div>
@@ -1045,6 +1155,12 @@ function showResult() {
 
   // 스텝 인디케이터 업데이트
   updateStepIndicator(6);
+
+  // 연락처 단계 배지 업데이트 (등급 저장)
+  updateContactBadge(r.grade);
+
+  // 연락처 폼 노출 (결과 하단에 바로 보임)
+  document.getElementById('contactStep').style.display = 'block';
 }
 
 // ── 진단 항목 생성
@@ -1138,6 +1254,22 @@ function resetDiagnosis() {
   document.getElementById('stickyCta').classList.remove('show');
   document.getElementById('structBox').style.display = 'none';
 
+  // 연락처·성공 화면 초기화
+  document.getElementById('contactStep').style.display = 'none';
+  document.getElementById('successWrap').classList.remove('show');
+  document.getElementById('inputName').value = '';
+  document.getElementById('inputPhone').value = '';
+  document.getElementById('nameError').classList.remove('show');
+  document.getElementById('phoneError').classList.remove('show');
+  document.getElementById('inputName').classList.remove('error');
+  document.getElementById('inputPhone').classList.remove('error');
+  const submitBtn = document.getElementById('submitBtn');
+  submitBtn.disabled = false;
+  submitBtn.classList.remove('sending');
+  submitBtn.textContent = '📋 상담 신청 완료하기 →';
+  _submitted = false;
+  _currentGrade = '';
+
   // 단계 인디케이터 복원
   document.getElementById('stepsIndicator').style.display = 'flex';
 
@@ -1172,6 +1304,186 @@ const observer = new MutationObserver(() => {
   });
 });
 observer.observe(document.getElementById('gaugeItems'), { childList: true });
+
+// ══════════════════════════════════════════════════
+// GOOGLE SHEETS 연동
+// ══════════════════════════════════════════════════
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzEe7M5CPhw8KeWG1WaQaAHtGao-uyLQQXUoLv8dgtR8qGCcB1Xj2WOtSWomv3qydvUtA/exec";
+
+// UTM 파라미터 수집
+const _utm = (() => {
+  const p = new URLSearchParams(window.location.search);
+  return {
+    source:   p.get('utm_source')   || '',
+    medium:   p.get('utm_medium')   || '',
+    campaign: p.get('utm_campaign') || '',
+    content:  p.get('utm_content')  || '',
+    term:     p.get('utm_term')     || ''
+  };
+})();
+
+// 중복 제출 방지 플래그
+let _submitted = false;
+
+// 현재 진단 결과 등급 저장
+let _currentGrade = '';
+
+// ── 연락처 폼으로 스크롤
+function scrollToContact() {
+  const el = document.getElementById('contactStep');
+  if (el) {
+    el.style.display = 'block';
+    setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
+    document.getElementById('inputName').focus();
+  }
+}
+
+// ── showResult 후 연락처 단계 배지 업데이트
+function updateContactBadge(grade) {
+  _currentGrade = grade;
+  const badgeMap = {
+    'A': '🏆 진단 완료 — 가능성 매우 높음',
+    'B': '✅ 진단 완료 — 구조 설계 가능',
+    'C': '⚡ 진단 완료 — 준비 후 가능',
+    'D': '🔴 진단 완료 — 상담 권장'
+  };
+  const el = document.getElementById('contactGradeBadge');
+  if (el) el.textContent = badgeMap[grade] || '✅ 진단 완료';
+}
+
+// ── 전화번호 자동 포맷 (010-xxxx-xxxx)
+function formatPhone(input) {
+  let v = input.value.replace(/\D/g, '').slice(0, 11);
+  if (v.length <= 3) {
+    input.value = v;
+  } else if (v.length <= 7) {
+    input.value = v.slice(0,3) + '-' + v.slice(3);
+  } else {
+    input.value = v.slice(0,3) + '-' + v.slice(3,7) + '-' + v.slice(7);
+  }
+}
+
+// ── 전화번호 검증
+function validatePhone(raw) {
+  const digits = raw.replace(/\D/g, '');
+  return /^01[0-9]{8,9}$/.test(digits);
+}
+
+// ── 진단 답변 텍스트 조합
+function getDiagAnswers() {
+  const jobLabel = {
+    '4대보험 직장인': '직장인(4대보험)',
+    '자영업자': '자영업자',
+    '프리랜서': '프리랜서',
+    '무직/기타': '무직/기타'
+  };
+  const cashLabel = {
+    '0': '0~500만원',
+    '500': '500~1천만원',
+    '1500': '1천~3천만원',
+    '5000': '3천만원 이상'
+  };
+  return {
+    q1: `신용점수 ${state.score}점`,
+    q2: `월소득 ${state.income}만원 / ${jobLabel[state.jobType] || state.jobType}`,
+    q3: `기대출 ${state.debt}만원`,
+    q4: `현금 ${cashLabel[state.cash] || state.cash} / 주택${state.houseOwn} / 연체${state.overdue}`
+  };
+}
+
+// ── 제출 처리
+async function submitContact() {
+  if (_submitted) return;
+
+  const nameEl  = document.getElementById('inputName');
+  const phoneEl = document.getElementById('inputPhone');
+  const nameErr = document.getElementById('nameError');
+  const phoneErr= document.getElementById('phoneError');
+  const btn     = document.getElementById('submitBtn');
+
+  // 초기화
+  nameEl.classList.remove('error');
+  phoneEl.classList.remove('error');
+  nameErr.classList.remove('show');
+  phoneErr.classList.remove('show');
+
+  const name  = nameEl.value.trim();
+  const phone = phoneEl.value.trim();
+  let valid = true;
+
+  if (!name) {
+    nameEl.classList.add('error');
+    nameErr.classList.add('show');
+    valid = false;
+  }
+  if (!validatePhone(phone)) {
+    phoneEl.classList.add('error');
+    phoneErr.classList.add('show');
+    valid = false;
+  }
+  if (!valid) return;
+
+  // 제출 시작
+  _submitted = true;
+  btn.disabled = true;
+  btn.classList.add('sending');
+  btn.textContent = '⏳ 전송 중...';
+
+  const diag = getDiagAnswers();
+  const payload = {
+    name:          name,
+    phone:         phone.replace(/\D/g, ''),
+    grade:         _currentGrade,
+    diagnostic_q1: diag.q1,
+    diagnostic_q2: diag.q2,
+    diagnostic_q3: diag.q3,
+    diagnostic_q4: diag.q4,
+    utm_source:    _utm.source,
+    utm_medium:    _utm.medium,
+    utm_campaign:  _utm.campaign,
+    utm_content:   _utm.content,
+    utm_term:      _utm.term,
+    page_url:      window.location.href,
+    user_agent:    navigator.userAgent
+  };
+
+  try {
+    await fetch(SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    showSuccess(name, phone);
+  } catch (err) {
+    // no-cors 모드에선 에러 감지 어려우므로 성공으로 처리
+    showSuccess(name, phone);
+  }
+}
+
+// ── 성공 화면 표시
+function showSuccess(name, phone) {
+  document.getElementById('contactStep').style.display = 'none';
+  document.getElementById('stickyCta').classList.remove('show');
+
+  const gradeLabel = {
+    'A': '가능성 매우 높음 🏆',
+    'B': '구조 설계 가능 ✅',
+    'C': '준비 후 가능 ⚡',
+    'D': '상담 권장 🔴'
+  };
+  const infoBox = document.getElementById('successInfoBox');
+  infoBox.innerHTML = `
+    <div class="sib-row"><div class="sib-k">신청자</div><div class="sib-v">${name} 님</div></div>
+    <div class="sib-row"><div class="sib-k">연락처</div><div class="sib-v">${phone}</div></div>
+    <div class="sib-row"><div class="sib-k">진단 등급</div><div class="sib-v">${gradeLabel[_currentGrade] || '-'}</div></div>
+    <div class="sib-row"><div class="sib-k">상담 방법</div><div class="sib-v">전화 또는 카카오톡</div></div>
+  `;
+
+  const sw = document.getElementById('successWrap');
+  sw.classList.add('show');
+  sw.scrollIntoView({ behavior: 'smooth' });
+}
 </script>
 </body>
 </html>
