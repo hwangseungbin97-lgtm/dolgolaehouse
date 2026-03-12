@@ -717,6 +717,18 @@ input[type=range]::-webkit-slider-thumb{
       <div class="inp-error" id="phoneError">올바른 휴대폰 번호를 입력해 주세요. (010으로 시작)</div>
     </div>
 
+    <div class="inp-wrap">
+      <div class="inp-label">
+        이메일
+        <span style="font-size:10px;color:rgba(255,255,255,.38);font-weight:400;">선택 · 뉴스레터 수신 시 입력</span>
+      </div>
+      <input class="inp-contact" type="email" id="inputEmail" placeholder="example@email.com" maxlength="60" autocomplete="email"/>
+      <div class="inp-error" id="emailError">올바른 이메일 형식을 입력해 주세요.</div>
+      <div style="margin-top:6px;font-size:10px;color:rgba(255,255,255,.35);line-height:1.6;">
+        📬 내집마련 전략 · 대출 정보 · 신축 매물 소식을 이메일로 받아보실 수 있습니다.
+      </div>
+    </div>
+
     <button class="submit-btn" id="submitBtn" onclick="submitContact()">
       📋 상담 신청 완료하기 →
     </button>
@@ -1259,10 +1271,13 @@ function resetDiagnosis() {
   document.getElementById('successWrap').classList.remove('show');
   document.getElementById('inputName').value = '';
   document.getElementById('inputPhone').value = '';
+  document.getElementById('inputEmail').value = '';
   document.getElementById('nameError').classList.remove('show');
   document.getElementById('phoneError').classList.remove('show');
+  document.getElementById('emailError').classList.remove('show');
   document.getElementById('inputName').classList.remove('error');
   document.getElementById('inputPhone').classList.remove('error');
+  document.getElementById('inputEmail').classList.remove('error');
   const submitBtn = document.getElementById('submitBtn');
   submitBtn.disabled = false;
   submitBtn.classList.remove('sending');
@@ -1397,18 +1412,23 @@ async function submitContact() {
 
   const nameEl  = document.getElementById('inputName');
   const phoneEl = document.getElementById('inputPhone');
+  const emailEl = document.getElementById('inputEmail');
   const nameErr = document.getElementById('nameError');
   const phoneErr= document.getElementById('phoneError');
+  const emailErr= document.getElementById('emailError');
   const btn     = document.getElementById('submitBtn');
 
   // 초기화
   nameEl.classList.remove('error');
   phoneEl.classList.remove('error');
+  emailEl.classList.remove('error');
   nameErr.classList.remove('show');
   phoneErr.classList.remove('show');
+  emailErr.classList.remove('show');
 
   const name  = nameEl.value.trim();
   const phone = phoneEl.value.trim();
+  const email = emailEl.value.trim();
   let valid = true;
 
   if (!name) {
@@ -1419,6 +1439,12 @@ async function submitContact() {
   if (!validatePhone(phone)) {
     phoneEl.classList.add('error');
     phoneErr.classList.add('show');
+    valid = false;
+  }
+  // 이메일은 선택 — 입력했을 때만 형식 검증
+  if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    emailEl.classList.add('error');
+    emailErr.classList.add('show');
     valid = false;
   }
   if (!valid) return;
@@ -1433,6 +1459,7 @@ async function submitContact() {
   const payload = {
     name:          name,
     phone:         phone.replace(/\D/g, ''),
+    email:         email,
     grade:         _currentGrade,
     diagnostic_q1: diag.q1,
     diagnostic_q2: diag.q2,
@@ -1448,15 +1475,17 @@ async function submitContact() {
   };
 
   try {
-    await fetch(SCRIPT_URL, {
+    // Apps Script는 리다이렉트를 통해 응답 → redirect:follow 필수
+    const res = await fetch(SCRIPT_URL, {
       method: 'POST',
       mode: 'no-cors',
-      headers: { 'Content-Type': 'application/json' },
+      redirect: 'follow',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
       body: JSON.stringify(payload)
     });
     showSuccess(name, phone);
   } catch (err) {
-    // no-cors 모드에선 에러 감지 어려우므로 성공으로 처리
+    // 네트워크 에러 시에도 성공 처리 (no-cors 특성상 응답 읽기 불가)
     showSuccess(name, phone);
   }
 }
