@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>내 조건으로 집 살 수 있을까? 5분 진단 | 돌고래하우스</title>
-<meta name="description" content="신용점수·기대출·현금·소득 입력하면 1금융 DSR 기준으로 5분 안에 내집마련 가능 여부 진단해드립니다."/>
+<title>내 조건으로 집 살 수 있을까? 1분 진단 | 내집마련코치</title>
+<meta name="description" content="신용점수·기대출·현금·소득 입력하면 1금융 DSR 기준으로 1분 안에 내집마련 가능 여부 진단해드립니다."/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet"/>
@@ -481,8 +481,8 @@ input[type=range]::-webkit-slider-thumb{
 
 <!-- 헤더 -->
 <div class="hdr">
-  <div class="logo">🐬 돌고래<em>하우스</em></div>
-  <div class="hdr-badge">⏱ 5분 진단</div>
+  <div class="logo">🏠 내집마련<em>코치</em></div>
+  <div class="hdr-badge">⏱ 1분 진단</div>
 </div>
 
 <!-- HERO -->
@@ -491,7 +491,7 @@ input[type=range]::-webkit-slider-thumb{
   <h1>내 조건으로<br/><span class="hl">집 살 수 있을까?</span></h1>
   <p class="hero-desc">
     신용점수 · 기대출 · 월소득 · 현금을 입력하면<br/>
-    <b>1금융 DSR 기준으로 5분 안에 진단해드립니다.</b><br/>
+    <b>1금융 DSR 기준으로 1분 안에 진단해드립니다.</b><br/>
     은행 방문 전, 가능 여부부터 먼저 확인하세요.
   </p>
 
@@ -589,7 +589,40 @@ input[type=range]::-webkit-slider-thumb{
     <!-- 기대출 월납부 추정 -->
     <div id="debtMonthly" style="padding:10px 13px;border-radius:9px;font-size:12px;margin-bottom:18px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.65);display:none;"></div>
 
-    <button class="next-btn" onclick="goStep(4)">다음 단계 →</button>
+    <!-- 대출 상세 (기대출이 있을 때만 노출) -->
+    <div id="debtDetailWrap" style="display:none;">
+      <div class="inp-wrap">
+        <div class="inp-label">
+          기대출 금융권
+          <span class="hint">DSR·금리 산정에 영향</span>
+        </div>
+        <div class="choice-grid">
+          <div class="choice-btn" onclick="selectChoice(this,'debtType','1금융')">
+            <span class="cb-icon">🏦</span>1금융<br/><small style="font-size:10px;color:rgba(255,255,255,.45);">은행</small>
+          </div>
+          <div class="choice-btn" onclick="selectChoice(this,'debtType','2금융')">
+            <span class="cb-icon">🏢</span>2금융<br/><small style="font-size:10px;color:rgba(255,255,255,.45);">저축은행·캐피탈</small>
+          </div>
+          <div class="choice-btn" onclick="selectChoice(this,'debtType','3금융/카드론')">
+            <span class="cb-icon">💳</span>3금융/카드론<br/><small style="font-size:10px;color:rgba(255,255,255,.45);">대부업 포함</small>
+          </div>
+          <div class="choice-btn" onclick="selectChoice(this,'debtType','잘 모름')">
+            <span class="cb-icon">❓</span>잘 모름<br/><small style="font-size:10px;color:rgba(255,255,255,.45);">상담 시 확인</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="inp-wrap">
+        <div class="inp-label">기대출 건수</div>
+        <div class="choice-grid col3">
+          <div class="choice-btn" onclick="selectChoice(this,'debtCount','1건')">1건</div>
+          <div class="choice-btn" onclick="selectChoice(this,'debtCount','2건')">2건</div>
+          <div class="choice-btn" onclick="selectChoice(this,'debtCount','3건 이상')">3건 이상</div>
+        </div>
+      </div>
+    </div>
+
+    <button class="next-btn" id="btn3" onclick="goStep(4)">다음 단계 →</button>
   </div>
 </div>
 
@@ -625,7 +658,7 @@ input[type=range]::-webkit-slider-thumb{
 <div class="step-section" id="step5">
   <div class="card">
     <div class="card-title">STEP 05 / 추가 정보</div>
-    <div class="card-question">세 가지만 더<br/>알려주세요.</div>
+    <div class="card-question">네 가지만 더<br/>알려주세요.</div>
     <div class="card-sub">더 정확한 진단을 위해 필요합니다.</div>
 
     <div class="inp-wrap">
@@ -655,30 +688,44 @@ input[type=range]::-webkit-slider-thumb{
     <div class="inp-wrap">
       <div class="inp-label">희망 지역 <span style="font-size:10px;color:rgba(255,255,255,.5);font-weight:400;">· 서비스 가능 지역 확인</span></div>
       <div class="region-grid">
-        <div class="region-btn priority" onclick="selectRegion(this,'서울')">
-          <span class="rb-icon">🏙️</span>서울
-          <span class="rb-tag">우선</span>
-        </div>
-        <div class="region-btn priority" onclick="selectRegion(this,'경기')">
-          <span class="rb-icon">🏘️</span>경기
-          <span class="rb-tag">우선</span>
-        </div>
         <div class="region-btn priority" onclick="selectRegion(this,'인천')">
           <span class="rb-icon">🌊</span>인천
           <span class="rb-tag">우선</span>
         </div>
-        <div class="region-btn" onclick="selectRegion(this,'천안/아산')">
-          <span class="rb-icon">🚄</span>천안/아산
+        <div class="region-btn priority" onclick="selectRegion(this,'안산')">
+          <span class="rb-icon">🏙️</span>안산
+          <span class="rb-tag">우선</span>
         </div>
-        <div class="region-btn" onclick="selectRegion(this,'대전')">
-          <span class="rb-icon">🏙️</span>대전
+        <div class="region-btn" onclick="selectRegion(this,'포천')">
+          <span class="rb-icon">🏞️</span>포천
         </div>
-        <div class="region-btn other" onclick="selectRegion(this,'기타지방')">
-          <span class="rb-icon">📍</span>기타 지방
+        <div class="region-btn" onclick="selectRegion(this,'파주')">
+          <span class="rb-icon">🏘️</span>파주
+        </div>
+        <div class="region-btn other" onclick="selectRegion(this,'기타 경기권')">
+          <span class="rb-icon">📍</span>기타 경기권
         </div>
       </div>
       <!-- 지역 안내 문구 -->
       <div id="regionNotice" style="display:none;margin-top:10px;padding:11px 13px;border-radius:9px;font-size:12px;line-height:1.7;font-weight:600;white-space:pre-line;"></div>
+    </div>
+
+    <div class="inp-wrap">
+      <div class="inp-label">이사 희망 시기</div>
+      <div class="choice-grid">
+        <div class="choice-btn" onclick="selectChoice(this,'moveDate','즉시 가능')">
+          <span class="cb-icon">⚡</span>즉시 가능
+        </div>
+        <div class="choice-btn" onclick="selectChoice(this,'moveDate','1개월 이내')">
+          <span class="cb-icon">📅</span>1개월 이내
+        </div>
+        <div class="choice-btn" onclick="selectChoice(this,'moveDate','3개월 이내')">
+          <span class="cb-icon">🗓️</span>3개월 이내
+        </div>
+        <div class="choice-btn" onclick="selectChoice(this,'moveDate','아직 미정')">
+          <span class="cb-icon">💭</span>아직 미정
+        </div>
+      </div>
     </div>
 
     <button class="next-btn" id="btn5" onclick="runDiagnosis()" disabled>📊 내 조건 진단하기</button>
@@ -759,7 +806,7 @@ input[type=range]::-webkit-slider-thumb{
       <span>🏢 건물명 공개</span><span class="rc-dot"></span>
       <span>💰 수수료 0원</span><span class="rc-dot"></span>
       <span>⚖️ 법무팀 동행</span><span class="rc-dot"></span>
-      <span>⏱️ 진단 5분</span>
+      <span>⏱️ 진단 1분</span>
     </div>
   </div>
 
@@ -852,9 +899,12 @@ const state = {
   income: 300,
   jobType: '',
   debt: 0,
+  debtType: '',
+  debtCount: '',
   cash: '',
   houseOwn: '',
-  overdue: ''
+  overdue: '',
+  moveDate: ''
 };
 
 // ══════════════════════════════════
@@ -894,6 +944,7 @@ initSlider('debtSlider', 'debtDisp', 0, 20000, v => {
 }, v => {
   state.debt = v >= 20000 ? 20000 : v;
   updateDebtMonthly(v);
+  updateDebtDetailVisibility(v);
 });
 
 // ── 신용점수 설명 배지
@@ -935,6 +986,20 @@ function updateDebtMonthly(debt) {
   el.innerHTML = `💡 기대출 ${numFmt(debt)}만원 기준 월 원리금 추정: <b style="color:#fff;">약 ${numFmt(monthly)}원</b><br/><span style="font-size:10px;">(5년 원금균등 기준, DSR 산정 시 반영)</span>`;
 }
 
+// ── 기대출 상세(금융권·건수) 노출 여부 + STEP3 다음 버튼 활성화 체크
+function updateDebtDetailVisibility(debt) {
+  const wrap = document.getElementById('debtDetailWrap');
+  const btn3 = document.getElementById('btn3');
+  if (debt <= 0) {
+    wrap.style.display = 'none';
+    state.debtType = ''; state.debtCount = '';
+    if (btn3) btn3.disabled = false; // 기대출 없으면 바로 다음 단계 가능
+    return;
+  }
+  wrap.style.display = 'block';
+  if (btn3) btn3.disabled = !(state.debtType && state.debtCount);
+}
+
 // ══════════════════════════════════
 // 지역 선택
 // ══════════════════════════════════
@@ -942,12 +1007,11 @@ let _selectedRegion = '';
 
 // 지역별 설정 (우선도 + 안내 문구)
 const regionConfig = {
-  '서울':    { priority: 'high',   penalty: 0,  color: 'var(--green)',  bg: 'rgba(0,214,143,.1)',  border: 'rgba(0,214,143,.35)',  msg: '✅ 서울은 매물 공급이 가장 활발한 지역입니다.\n현재 조건으로 상담 진행이 가능합니다.' },
-  '경기':    { priority: 'high',   penalty: 0,  color: 'var(--green)',  bg: 'rgba(0,214,143,.1)',  border: 'rgba(0,214,143,.35)',  msg: '✅ 경기도는 신축빌라 공급이 많고 구조 설계가 유리한 지역입니다.\n상담 진행이 충분히 가능합니다.' },
-  '인천':    { priority: 'high',   penalty: 0,  color: 'var(--green)',  bg: 'rgba(0,214,143,.1)',  border: 'rgba(0,214,143,.35)',  msg: '✅ 인천은 현재 매물 연결이 가능한 지역입니다.\n상담 후 바로 매물 안내가 가능합니다.' },
-  '천안/아산':{ priority: 'mid',  penalty: 5,  color: 'var(--yellow)', bg: 'rgba(255,184,0,.1)',   border: 'rgba(255,184,0,.35)',  msg: '⚡ 천안/아산은 수도권 이외 지역으로 매물 연결에 시간이 걸릴 수 있습니다.\n상담은 가능하지만 수도권 대비 선택지가 제한될 수 있습니다.' },
-  '대전':    { priority: 'mid',   penalty: 8,  color: 'var(--yellow)', bg: 'rgba(255,184,0,.1)',   border: 'rgba(255,184,0,.35)',  msg: '⚡ 대전은 현재 직접 서비스 지역이 아닙니다.\n상담은 가능하지만 매물 연결까지 시간이 걸릴 수 있습니다.' },
-  '기타지방': { priority: 'low',  penalty: 15, color: 'var(--red)',    bg: 'rgba(255,68,68,.08)',  border: 'rgba(255,68,68,.25)',  msg: '🔴 현재 서비스 가능 지역이 아닙니다.\n수도권(서울·경기·인천) 또는 천안권이 아니면 매물 연결이 어렵습니다.\n상담 신청은 가능하지만 진행이 제한될 수 있습니다.' }
+  '인천':      { priority: 'high', penalty: 0,  color: 'var(--green)',  bg: 'rgba(0,214,143,.1)',  border: 'rgba(0,214,143,.35)',  msg: '✅ 인천은 매물 공급이 가장 활발한 지역입니다.\n상담 후 바로 매물 안내가 가능합니다.' },
+  '안산':      { priority: 'high', penalty: 0,  color: 'var(--green)',  bg: 'rgba(0,214,143,.1)',  border: 'rgba(0,214,143,.35)',  msg: '✅ 안산은 현재 매물 연결이 활발한 지역입니다.\n상담 진행이 충분히 가능합니다.' },
+  '포천':      { priority: 'mid',  penalty: 5,  color: 'var(--yellow)', bg: 'rgba(255,184,0,.1)',  border: 'rgba(255,184,0,.35)',  msg: '⚡ 포천은 매물 선택지가 다소 제한적일 수 있습니다.\n상담은 가능하며 조건에 맞는 매물을 확인해드립니다.' },
+  '파주':      { priority: 'mid',  penalty: 5,  color: 'var(--yellow)', bg: 'rgba(255,184,0,.1)',  border: 'rgba(255,184,0,.35)',  msg: '⚡ 파주는 매물 선택지가 다소 제한적일 수 있습니다.\n상담은 가능하며 조건에 맞는 매물을 확인해드립니다.' },
+  '기타 경기권':{ priority: 'low', penalty: 8,  color: 'var(--yellow)', bg: 'rgba(255,184,0,.08)', border: 'rgba(255,184,0,.25)',  msg: '📍 그 외 경기권 지역도 상담이 가능합니다.\n지역에 따라 매물 연결까지 시간이 다소 걸릴 수 있습니다.' }
 };
 
 function selectRegion(el, value) {
@@ -956,7 +1020,7 @@ function selectRegion(el, value) {
   _selectedRegion = value;
 
   // btn5 활성화 체크
-  if (state.houseOwn && state.overdue && _selectedRegion) {
+  if (state.houseOwn && state.overdue && state.moveDate && _selectedRegion) {
     document.getElementById('btn5').disabled = false;
   }
 
@@ -981,8 +1045,12 @@ function selectChoice(el, key, value) {
   // 버튼 활성화
   if (key === 'jobType') { document.getElementById('btn2').disabled = false; }
   if (key === 'cash') { document.getElementById('btn4').disabled = false; }
-  if (key === 'houseOwn' || key === 'overdue') {
-    if (state.houseOwn && state.overdue && _selectedRegion) document.getElementById('btn5').disabled = false;
+  if (key === 'debtType' || key === 'debtCount') {
+    const btn3 = document.getElementById('btn3');
+    if (btn3) btn3.disabled = !(state.debtType && state.debtCount);
+  }
+  if (key === 'houseOwn' || key === 'overdue' || key === 'moveDate') {
+    if (state.houseOwn && state.overdue && state.moveDate && _selectedRegion) document.getElementById('btn5').disabled = false;
   }
 }
 
@@ -1022,7 +1090,7 @@ function updateStepIndicator(current) {
 // 핵심 진단 엔진 (2025~2026 DSR 기준)
 // ══════════════════════════════════
 function computeDiagnosis() {
-  const { score, income, jobType, debt, cash, houseOwn, overdue } = state;
+  const { score, income, jobType, debt, debtType, debtCount, cash, houseOwn, overdue } = state;
 
   // ── 1) 신용 등급 평가 ──
   let creditGrade, creditScore, creditColor;
@@ -1047,8 +1115,11 @@ function computeDiagnosis() {
   // 월 소득 * 0.40 = 월 최대 원리금
   const monthlyLimit = Math.floor(recognizedIncome / 12 * 0.40);  // 만원
 
-  // 기대출 월 원리금 (신용대출 5년 원금균등 가정 + 금리 7%)
-  const debtMonthlyRate = 0.07 / 12;
+  // 기대출 월 원리금 (신용대출 5년 원금균등 가정, 금융권별 금리 차등 적용)
+  let debtRate = 0.07; // 기본(1금융) 가정
+  if (debtType === '2금융') debtRate = 0.12;
+  else if (debtType === '3금융/카드론') debtRate = 0.18;
+  const debtMonthlyRate = debtRate / 12;
   const debtMonthly = debt > 0
     ? Math.round(debt * debtMonthlyRate / (1 - Math.pow(1 + debtMonthlyRate, -60)))
     : 0;
@@ -1112,6 +1183,12 @@ function computeDiagnosis() {
   if (debt >= 10000) overallScore -= 10;
   else if (debt >= 5000) overallScore -= 5;
 
+  // 기대출 금융권·건수 패널티
+  if (debtType === '3금융/카드론') overallScore -= 15;
+  else if (debtType === '2금융') overallScore -= 8;
+  if (debtCount === '3건 이상') overallScore -= 8;
+  else if (debtCount === '2건') overallScore -= 3;
+
   overallScore = Math.max(0, Math.min(100, Math.round(overallScore)));
 
   // ── 7) 지역 패널티 반영 ──
@@ -1136,8 +1213,8 @@ function computeDiagnosis() {
     zeroIncomeNote = '소득 증빙 불가 시 1금융 주담대 승인이 어렵습니다.';
   }
 
-  // ── 10) 기타지방 강제 하향 ──
-  if (_selectedRegion === '기타지방') {
+  // ── 10) 기타 경기권 강제 하향 ──
+  if (_selectedRegion === '기타 경기권') {
     if (grade === 'A') { grade = 'B'; canBuy = true; }
     else if (grade === 'B') { grade = 'C'; canBuy = false; }
   }
@@ -1206,9 +1283,9 @@ function showResult() {
   let subText = gd.sub;
   if (_selectedRegion && r.regionPenalty > 0) {
     const regionMsg = {
-      '천안/아산': '\n\n📍 희망 지역(천안/아산)이 수도권 외 지역으로\n매물 선택지가 제한될 수 있습니다.',
-      '대전':      '\n\n📍 희망 지역(대전)은 현재 직접 서비스 지역이 아니어서\n진행 가능성이 다소 낮아집니다.',
-      '기타지방':  '\n\n🔴 희망 지역이 현재 서비스 가능 범위 밖입니다.\n수도권 또는 천안권으로 변경 시 가능성이 높아집니다.'
+      '포천':       '\n\n📍 희망 지역(포천)은 매물 선택지가 다소 제한적일 수 있습니다.',
+      '파주':       '\n\n📍 희망 지역(파주)은 매물 선택지가 다소 제한적일 수 있습니다.',
+      '기타 경기권': '\n\n📍 희망 지역이 인천·안산 대비 매물 연결에 시간이 더 걸릴 수 있습니다.'
     };
     if (regionMsg[_selectedRegion]) subText += regionMsg[_selectedRegion];
   }
@@ -1318,7 +1395,7 @@ function showResult() {
 // ── 진단 항목 생성
 function buildDiagItems(r) {
   const items = [];
-  const { score, income, jobType, debt, cash, houseOwn, overdue } = state;
+  const { score, income, jobType, debt, debtType, debtCount, cash, houseOwn, overdue } = state;
 
   // 신용점수
   if (score >= 750) {
@@ -1362,6 +1439,24 @@ function buildDiagItems(r) {
     items.push({ type:'bad', icon:'🔴', label:'기대출 과다', text:`${numFmt(debt)}만원의 기대출이 DSR 대부분을 잠식합니다. 기대출 정리 없이는 1금융 주담대가 어렵습니다.` });
   }
 
+  // 기대출 금융권·건수
+  if (debt > 0 && debtType) {
+    if (debtType === '1금융') {
+      items.push({ type:'ok', icon:'✅', label:'1금융권 대출', text:'은행권 대출이라 DSR 산정과 대환·정리가 상대적으로 수월합니다.' });
+    } else if (debtType === '2금융') {
+      items.push({ type:'warn', icon:'⚡', label:'2금융권 대출', text:'저축은행·캐피탈 대출은 금리가 높아 월 원리금 부담이 커집니다. 1금융 대환을 우선 검토하면 유리합니다.' });
+    } else if (debtType === '3금융/카드론') {
+      items.push({ type:'bad', icon:'🔴', label:'3금융/카드론 대출', text:'고금리 대출이 있으면 1금융 주담대 심사에 불리하게 작용합니다. 정리 우선순위를 상담에서 짚어드립니다.' });
+    } else {
+      items.push({ type:'warn', icon:'❓', label:'대출 금융권 확인 필요', text:'정확한 금융권 확인이 필요합니다. 서류 확인 후 DSR 재계산이 가능합니다.' });
+    }
+    if (debtCount === '3건 이상') {
+      items.push({ type:'bad', icon:'🔴', label:'대출 건수 많음(3건 이상)', text:'대출 건수가 많으면 심사 시 신용 리스크로 평가됩니다. 통합 및 정리 전략이 필요합니다.' });
+    } else if (debtCount === '2건') {
+      items.push({ type:'warn', icon:'⚡', label:'대출 건수 2건', text:'대출을 통합하면 DSR 관리와 심사에 유리해질 수 있습니다.' });
+    }
+  }
+
   // 현금
   const cashInt = parseInt(cash) || 0;
   if (cashInt >= 5000) {
@@ -1390,7 +1485,8 @@ function buildDiagItems(r) {
 function resetDiagnosis() {
   // 상태 초기화
   state.score = 700; state.income = 300; state.jobType = '';
-  state.debt = 0; state.cash = ''; state.houseOwn = ''; state.overdue = '';
+  state.debt = 0; state.debtType = ''; state.debtCount = '';
+  state.cash = ''; state.houseOwn = ''; state.overdue = ''; state.moveDate = '';
 
   // 슬라이더 리셋
   document.getElementById('scoreSlider').value = 700;
@@ -1400,6 +1496,9 @@ function resetDiagnosis() {
   // 선택지 초기화
   document.querySelectorAll('.choice-btn').forEach(b => b.classList.remove('selected'));
   document.querySelectorAll('.next-btn[id]').forEach(b => b.disabled = true);
+  document.getElementById('debtDetailWrap').style.display = 'none';
+  const btn3 = document.getElementById('btn3');
+  if (btn3) btn3.disabled = false; // 기대출 0으로 초기화되므로 바로 다음 단계 가능
 
   // 화면 초기화
   document.getElementById('resultWrap').classList.remove('show');
@@ -1544,8 +1643,9 @@ function getDiagAnswers() {
   return {
     q1: `신용점수 ${state.score}점`,
     q2: `월소득 ${state.income}만원 / ${jobLabel[state.jobType] || state.jobType}`,
-    q3: `기대출 ${state.debt}만원`,
-    q4: `현금 ${cashLabel[state.cash] || state.cash} / 주택${state.houseOwn} / 연체${state.overdue}`
+    q3: `기대출 ${state.debt}만원 / ${state.debtType || '-'} / ${state.debtCount || '-'}`,
+    q4: `현금 ${cashLabel[state.cash] || state.cash} / 주택${state.houseOwn} / 연체${state.overdue}`,
+    q5: `이사희망시기 ${state.moveDate || '-'}`
   };
 }
 
@@ -1608,6 +1708,10 @@ async function submitContact() {
     diagnostic_q2: diag.q2,
     diagnostic_q3: diag.q3,
     diagnostic_q4: diag.q4,
+    diagnostic_q5: diag.q5,
+    move_date:     state.moveDate,
+    debt_type:     state.debtType,
+    debt_count:    state.debtCount,
     utm_source:    _utm.source,
     utm_medium:    _utm.medium,
     utm_campaign:  _utm.campaign,
